@@ -8,7 +8,6 @@ class ShopPage extends StatefulWidget {
 }
 
 class _ShopPageState extends State<ShopPage> {
-
   @override
   void initState() {
     super.initState();

@@ -62,14 +62,12 @@ class _MainPageState extends State<MainPage> {
                         children: <Widget>[
                           Icon(
                             Icons.person,
-                            color:
-                                currentPage == 0 ? Colors.white : Colors.grey,
+                            color: currentPage == 0 ? Colors.white : Colors.grey,
                           ),
                           Text(
                             'Profil',
                             style: TextStyle(
-                              color:
-                                  currentPage == 0 ? Colors.white : Colors.grey,
+                              color: currentPage == 0 ? Colors.white : Colors.grey,
                               fontWeight: currentPage == 0 ? FontWeight.w600 : FontWeight.w400,
                               fontSize: currentPage == 0 ? 13 : 12,
                             ),
@@ -85,14 +83,12 @@ class _MainPageState extends State<MainPage> {
                         children: <Widget>[
                           Icon(
                             Icons.equalizer,
-                            color:
-                                currentPage == 1 ? Colors.white : Colors.grey,
+                            color: currentPage == 1 ? Colors.white : Colors.grey,
                           ),
                           Text(
                             'Ranglisten',
                             style: TextStyle(
-                              color:
-                                  currentPage == 1 ? Colors.white : Colors.grey,
+                              color: currentPage == 1 ? Colors.white : Colors.grey,
                               fontWeight: currentPage == 1 ? FontWeight.w600 : FontWeight.w400,
                               fontSize: currentPage == 1 ? 13 : 12,
                             ),
@@ -114,14 +110,12 @@ class _MainPageState extends State<MainPage> {
                         children: <Widget>[
                           Icon(
                             Icons.category,
-                            color:
-                            currentPage == 2 ? Colors.white : Colors.grey,
+                            color: currentPage == 2 ? Colors.white : Colors.grey,
                           ),
                           Text(
                             'Kategorien',
                             style: TextStyle(
-                              color:
-                              currentPage == 2 ? Colors.white : Colors.grey,
+                              color: currentPage == 2 ? Colors.white : Colors.grey,
                               fontWeight: currentPage == 2 ? FontWeight.w600 : FontWeight.w400,
                               fontSize: currentPage == 2 ? 13 : 12,
                             ),
@@ -137,14 +131,12 @@ class _MainPageState extends State<MainPage> {
                         children: <Widget>[
                           Icon(
                             Icons.shop_two,
-                            color:
-                            currentPage == 3 ? Colors.white : Colors.grey,
+                            color: currentPage == 3 ? Colors.white : Colors.grey,
                           ),
                           Text(
                             'Shop',
                             style: TextStyle(
-                              color:
-                              currentPage == 3 ? Colors.white : Colors.grey,
+                              color: currentPage == 3 ? Colors.white : Colors.grey,
                               fontWeight: currentPage == 3 ? FontWeight.w600 : FontWeight.w400,
                               fontSize: currentPage == 3 ? 13 : 12,
                             ),

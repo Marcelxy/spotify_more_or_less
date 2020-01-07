@@ -8,7 +8,6 @@ class HighscorePage extends StatefulWidget {
 }
 
 class _HighscorePageState extends State<HighscorePage> {
-
   @override
   void initState() {
     super.initState();

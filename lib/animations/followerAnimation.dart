@@ -5,21 +5,16 @@ class FollowerAnimation extends StatefulWidget {
   _FollowerAnimationState createState() => _FollowerAnimationState();
 }
 
-class _FollowerAnimationState extends State<FollowerAnimation>
-    with SingleTickerProviderStateMixin {
+class _FollowerAnimationState extends State<FollowerAnimation> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<double> animation;
 
   @override
   void initState() {
-    _controller = AnimationController(
-        duration: Duration(seconds: 3),
-        vsync: this);
+    _controller = AnimationController(duration: Duration(seconds: 3), vsync: this);
     animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.addListener(() {
-      this.setState(() {
-
-      });
+      this.setState(() {});
     });
     super.initState();
   }
@@ -32,8 +27,6 @@ class _FollowerAnimationState extends State<FollowerAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-
-    );
+    return GestureDetector();
   }
 }

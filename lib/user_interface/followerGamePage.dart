@@ -22,9 +22,12 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
   AnimationController controller;
   Animation<double> animation;
   bool followerVisible = false;
+  bool furtherVisible = false;
   int highscorePoints = 0;
   int currentArtist = 0;
-  int nextArtist = 0;
+  var spotifyArtist;
+  var credentials;
+  var spotify;
   Random random = new Random();
 
   MoneyFormatterOutput topArtistFollowerFormatter;
@@ -34,7 +37,10 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
   void initState() {
     super.initState();
     SystemSettings.allowOnlyPortraitOrientation();
-    controller = AnimationController(duration: const Duration(seconds: 3), vsync: this);
+    credentials =
+        new spotifyApi.SpotifyApiCredentials('b9754ebac220485796ecd4b460193fe9', '5d7d58000a0841e6b133baa0f19a405b');
+    spotify = new spotifyApi.SpotifyApi(credentials);
+    controller = AnimationController(duration: const Duration(seconds: 5), vsync: this);
     controller.addListener(() {
       this.setState(() {});
     });
@@ -327,7 +333,7 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
                             side: BorderSide(color: Colors.white),
                           ),
                         ),
-                        visible: followerVisible,
+                        visible: furtherVisible,
                       ),
                     ],
                   ),
@@ -341,25 +347,16 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
   }
 
   void _nextRound() async {
-    setState(() {
-      followerVisible = false;
-      highscorePoints++;
-    });
-    while (nextArtist != widget.artistList.length - 2) {
-      nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length - 1);
-    }
-    var credentials =
-        new spotifyApi.SpotifyApiCredentials('b9754ebac220485796ecd4b460193fe9', '5d7d58000a0841e6b133baa0f19a405b');
-    var spotify = new spotifyApi.SpotifyApi(credentials);
-    var spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
-
+    highscorePoints++;
     setState(() {
       Artist artist = new Artist(spotifyArtist.name, spotifyArtist.images[0].url, spotifyArtist.followers.total);
       widget.artistList.add(artist);
-      for (int i = 0; i < widget.artistList.length; i++) {
+      /*for (int i = 0; i < widget.artistList.length; i++) {
         print("Name: ${widget.artistList[i].name}");
         print("Anzahl Follower: ${widget.artistList[i].numberOfFollower}");
-      }
+      }*/
+      followerVisible = false;
+      furtherVisible = false;
     });
   }
 
@@ -382,12 +379,23 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
   void _rightAnswer() async {
     followerVisible = true;
     controller.forward(from: 0.0);
+    int nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length);
+    spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
+    while (spotifyArtist.name == widget.artistList.last.name) {
+      nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length);
+      spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
+    }
+    setState(() {
+      furtherVisible = true;
+    });
   }
 
   void _wrongAnswer() {
     followerVisible = true;
+    controller.forward(from: 0.0);
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Falsche Antwort'),
@@ -405,7 +413,6 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
             ],
           );
         });
-    controller.forward(from: 0.0);
   }
 
   void _formatFollowerNumber() {

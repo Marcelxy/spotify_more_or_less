@@ -7,6 +7,7 @@ import 'package:spotify/spotify_io.dart' as spotifyApi;
 import 'package:spotify_more_or_less/datastructures/artist.dart';
 import 'package:spotify_more_or_less/user_interface/followerGamePage.dart';
 import 'package:spotify_more_or_less/datastructures/globalArtists.dart';
+import 'package:spotify_more_or_less/datastructures/categories.dart';
 import 'package:spotify_more_or_less/helper/systemSettings.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -15,38 +16,29 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  ProgressDialog progressDialog;
-  List<String> categories = [
-    'Weltweit',
-    'Deutsch',
-    'Englisch',
-    'Spanisch',
-    'Italienisch',
-    'Brasilianisch',
-  ];
+  ProgressDialog _progressDialog;
 
   @override
   void initState() {
     super.initState();
     SystemSettings.allowOnlyPortraitOrientation();
+    _progressDialog =
+    new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
+    _progressDialog.style(
+      message: 'Spiel wird gestartet...',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    progressDialog = new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-    progressDialog.style(
-      message: 'Spiel wird gestartet...',
-      progressWidget: CircularProgressIndicator(),
-    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Kategorien'),
         backgroundColor: Color.fromARGB(204, 27, 27, 27),
       ),
       body: GridView.builder(
-          itemCount: categories.length - 1,
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+          itemCount: Categories.categories.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               child: Padding(
@@ -55,7 +47,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   elevation: 5.0,
                   child: Container(
                     alignment: Alignment.center,
-                    child: Text('${categories[index]}'),
+                    child: Text('${Categories.categories[index]}'),
                   ),
                 ),
               ),
@@ -66,38 +58,39 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   void _chooseCategory() async {
-    progressDialog.show();
-    var credentials = new spotifyApi.SpotifyApiCredentials(
-        'b9754ebac220485796ecd4b460193fe9', '5d7d58000a0841e6b133baa0f19a405b');
+    _progressDialog.show();
+    var credentials =
+        new spotifyApi.SpotifyApiCredentials('b9754ebac220485796ecd4b460193fe9', '5d7d58000a0841e6b133baa0f19a405b');
     var spotify = new spotifyApi.SpotifyApi(credentials);
 
     List<Artist> artistList = new List<Artist>();
     Random firstRandom = new Random();
     Random secondRandom = new Random();
 
-    int firstRandomArtist = firstRandom.nextInt(GlobalArtists.spotifyArtistId.length - 1);
-    int secondRandomArtist = secondRandom.nextInt(GlobalArtists.spotifyArtistId.length - 1);
+    int firstRandomArtist = firstRandom.nextInt(GlobalArtists.spotifyArtistId.length);
+    int secondRandomArtist = secondRandom.nextInt(GlobalArtists.spotifyArtistId.length);
     var firstSpotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[firstRandomArtist]);
     var secondSpotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[secondRandomArtist]);
 
-    while(firstSpotifyArtist.name == secondSpotifyArtist.name) {
-      secondRandomArtist = secondRandom.nextInt(GlobalArtists.spotifyArtistId.length - 1);
+    while (firstSpotifyArtist.name == secondSpotifyArtist.name) {
+      secondRandomArtist = secondRandom.nextInt(GlobalArtists.spotifyArtistId.length);
       secondSpotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[secondRandomArtist]);
     }
 
-    Artist firstArtist = new Artist(firstSpotifyArtist.name, firstSpotifyArtist.images[0].url, firstSpotifyArtist.followers.total);
-    Artist secondArtist = new Artist(secondSpotifyArtist.name, secondSpotifyArtist.images[0].url, secondSpotifyArtist.followers.total);
+    Artist firstArtist =
+        new Artist(firstSpotifyArtist.name, firstSpotifyArtist.images[0].url, firstSpotifyArtist.followers.total);
+    Artist secondArtist =
+        new Artist(secondSpotifyArtist.name, secondSpotifyArtist.images[0].url, secondSpotifyArtist.followers.total);
     artistList.add(firstArtist);
     artistList.add(secondArtist);
 
-    for (int i = 0; i < artistList.length; i++) {
+    /*for (int i = 0; i < artistList.length; i++) {
       print("Name: ${artistList[i].name}");
       print("Anzahl Follower: ${artistList[i].numberOfFollower}");
-    }
-    Future.delayed(Duration(seconds: 1)).then((value) {
-      progressDialog.hide().whenComplete(() {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => FollowerGamePage(artistList)));
+    }*/
+    Future.delayed(Duration(milliseconds: 100)).then((value) {
+      _progressDialog.hide().whenComplete(() {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => FollowerGamePage(artistList)));
       });
     });
   }

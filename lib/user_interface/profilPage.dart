@@ -11,7 +11,6 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
-
   @override
   void initState() {
     super.initState();
@@ -24,16 +23,15 @@ class _ProfilPageState extends State<ProfilPage> {
         appBar: AppBar(
       title: Text('Profil'),
       backgroundColor: Color.fromARGB(204, 27, 27, 27),
-          actions: <Widget>[
-            IconButton(icon: Icon(Icons.input), onPressed: () => _signOut()),
-          ],
+      actions: <Widget>[
+        IconButton(icon: Icon(Icons.input), onPressed: () => _signOut()),
+      ],
     ));
   }
 
   void _signOut() async {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     await _firebaseAuth.signOut();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 }

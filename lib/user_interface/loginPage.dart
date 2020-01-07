@@ -27,22 +27,22 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  ProgressDialog progressDialog;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  ProgressDialog _progressDialog;
 
   @override
   void initState() {
     super.initState();
     SystemSettings.allowOnlyPortraitOrientation();
+    _progressDialog =
+    new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
+    _progressDialog.style(
+      message: 'Login...',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    progressDialog = new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
-    progressDialog.style(
-      message: 'Login...',
-      progressWidget: CircularProgressIndicator(),
-    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -79,8 +79,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<String> _signInWithGoogle() async {
-    progressDialog.show();
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    _progressDialog.show();
+    final GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
         idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken);
@@ -88,13 +88,15 @@ class _LoginPageState extends State<LoginPage> {
     final FirebaseUser user = authResult.user;
     final FirebaseUser currentUser = await _auth.currentUser();
     print("Angemeldet über Google mit " + currentUser.email);
-    Future.delayed(Duration(seconds: 1)).then((value) {
-      progressDialog.hide().whenComplete(() {
+    Future.delayed(Duration(milliseconds: 100)).then((value) {
+      _progressDialog.hide().whenComplete(() {
         Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
       });
     });
     return 'signInWithGoogle erfolgreich: $user';
   }
 
-  void _signInWithFacebook() async {}
+  void _signInWithFacebook() async {
+    // TODO Facebook Login implementieren.
+  }
 }
