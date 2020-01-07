@@ -3,41 +3,38 @@ import 'dart:math';
 
 import 'package:spotify_more_or_less/datastructures/artist.dart';
 import 'package:spotify_more_or_less/user_interface/mainPage.dart';
+import 'package:spotify_more_or_less/datastructures/globalArtists.dart';
+import 'package:spotify_more_or_less/helper/systemSettings.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
+import 'package:spotify/spotify_io.dart' as spotifyApi;
 
 class FollowerGamePage extends StatefulWidget {
-  final List<Artist> artist;
-  FollowerGamePage(this.artist);
+  final List<Artist> artistList;
+  FollowerGamePage(this.artistList);
 
   @override
   _FollowerGamePageState createState() => _FollowerGamePageState();
 }
 
-class _FollowerGamePageState extends State<FollowerGamePage>
-    with SingleTickerProviderStateMixin {
+class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
   bool followerVisible = false;
   int highscorePoints = 0;
-  int topArtist = 0;
-  int bottomArtist = 0;
-  Random random1 = new Random();
-  Random random2 = new Random();
+  int currentArtist = 0;
+  int nextArtist = 0;
+  Random random = new Random();
+
   MoneyFormatterOutput topArtistFollowerFormatter;
   MoneyFormatterOutput bottomArtistFollowerFormatter;
 
   @override
   void initState() {
     super.initState();
-    topArtist = random1.nextInt(widget.artist.length - 1);
-    bottomArtist = random2.nextInt(widget.artist.length - 1);
-    controller =
-        AnimationController(duration: const Duration(seconds: 3), vsync: this);
-    animation = Tween(
-            begin: 0.0,
-            end: widget.artist[bottomArtist].numberOfFollower.toDouble())
-        .animate(controller);
+    SystemSettings.allowOnlyPortraitOrientation();
+    controller = AnimationController(duration: const Duration(seconds: 3), vsync: this);
     controller.addListener(() {
       this.setState(() {});
     });
@@ -45,29 +42,10 @@ class _FollowerGamePageState extends State<FollowerGamePage>
 
   @override
   Widget build(BuildContext context) {
-    while (topArtist == bottomArtist) {
-      bottomArtist = random2.nextInt(widget.artist.length - 1);
-    }
-    animation = Tween(
-            begin: 0.0,
-            end: widget.artist[bottomArtist].numberOfFollower.toDouble())
-        .animate(controller);
-    topArtistFollowerFormatter = FlutterMoneyFormatter(
-      amount: widget.artist[topArtist].numberOfFollower.toDouble(),
-      settings: MoneyFormatterSettings(
-        thousandSeparator: '.',
-        fractionDigits: 0,
-      ),
-    ).output;
-    bottomArtistFollowerFormatter = FlutterMoneyFormatter(
-      amount: animation.value,
-      /*widget.artist[bottomArtist].numberOfFollower.toDouble(),*/
-      settings: MoneyFormatterSettings(
-        thousandSeparator: '.',
-        fractionDigits: 0,
-      ),
-    ).output;
+    animation = Tween(begin: 0.0, end: widget.artistList.last.numberOfFollower.toDouble()).animate(controller);
+    _formatFollowerNumber();
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Spotify More or Less',
       home: Scaffold(
         backgroundColor: Color.fromARGB(204, 27, 27, 27),
@@ -88,9 +66,8 @@ class _FollowerGamePageState extends State<FollowerGamePage>
               child: Stack(children: <Widget>[
                 Center(
                   child: CachedNetworkImage(
-                    imageUrl: widget.artist[topArtist].image,
-                    placeholder: (context, url) =>
-                        new CircularProgressIndicator(),
+                    imageUrl: widget.artistList[widget.artistList.length - 2].image,
+                    placeholder: (context, url) => new CircularProgressIndicator(),
                     errorWidget: (context, url, error) => new Icon(Icons.error),
                   ),
                 ),
@@ -101,26 +78,26 @@ class _FollowerGamePageState extends State<FollowerGamePage>
                     style: TextStyle(color: Colors.white),
                     children: <TextSpan>[
                       TextSpan(
-                          text: '${widget.artist[topArtist].name}\n',
+                        text: '${widget.artistList[widget.artistList.length - 2].name}\n',
                         style: TextStyle(
                           inherit: true,
                           fontSize: 24.0,
                           color: Colors.yellowAccent.shade700,
                           shadows: [
                             Shadow(
-                              // bottomLeft
+                                // bottomLeft
                                 offset: Offset(-1.5, -1.5),
                                 color: Colors.black),
                             Shadow(
-                              // bottomRight
+                                // bottomRight
                                 offset: Offset(1.5, -1.5),
                                 color: Colors.black),
                             Shadow(
-                              // topRight
+                                // topRight
                                 offset: Offset(1.5, 1.5),
                                 color: Colors.black),
                             Shadow(
-                              // topLeft
+                                // topLeft
                                 offset: Offset(-1.5, 1.5),
                                 color: Colors.black),
                           ],
@@ -128,26 +105,26 @@ class _FollowerGamePageState extends State<FollowerGamePage>
                       ),
                       TextSpan(text: 'hat\n'),
                       TextSpan(
-                          text: '${topArtistFollowerFormatter.nonSymbol}\n',
+                        text: '${topArtistFollowerFormatter.nonSymbol}\n',
                         style: TextStyle(
                           inherit: true,
                           fontSize: 24.0,
                           color: Colors.yellowAccent.shade700,
                           shadows: [
                             Shadow(
-                              // bottomLeft
+                                // bottomLeft
                                 offset: Offset(-1.5, -1.5),
                                 color: Colors.black),
                             Shadow(
-                              // bottomRight
+                                // bottomRight
                                 offset: Offset(1.5, -1.5),
                                 color: Colors.black),
                             Shadow(
-                              // topRight
+                                // topRight
                                 offset: Offset(1.5, 1.5),
                                 color: Colors.black),
                             Shadow(
-                              // topLeft
+                                // topLeft
                                 offset: Offset(-1.5, 1.5),
                                 color: Colors.black),
                           ],
@@ -164,9 +141,8 @@ class _FollowerGamePageState extends State<FollowerGamePage>
               child: Stack(children: <Widget>[
                 Center(
                   child: CachedNetworkImage(
-                    imageUrl: widget.artist[bottomArtist].image,
-                    placeholder: (context, url) =>
-                        new CircularProgressIndicator(),
+                    imageUrl: widget.artistList.last.image,
+                    placeholder: (context, url) => new CircularProgressIndicator(),
                     errorWidget: (context, url, error) => new Icon(Icons.error),
                   ),
                 ),
@@ -175,26 +151,26 @@ class _FollowerGamePageState extends State<FollowerGamePage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        widget.artist[bottomArtist].name,
+                        widget.artistList.last.name,
                         style: TextStyle(
                           inherit: true,
                           fontSize: 24.0,
                           color: Colors.yellowAccent.shade700,
                           shadows: [
                             Shadow(
-                              // bottomLeft
+                                // bottomLeft
                                 offset: Offset(-1.5, -1.5),
                                 color: Colors.black),
                             Shadow(
-                              // bottomRight
+                                // bottomRight
                                 offset: Offset(1.5, -1.5),
                                 color: Colors.black),
                             Shadow(
-                              // topRight
+                                // topRight
                                 offset: Offset(1.5, 1.5),
                                 color: Colors.black),
                             Shadow(
-                              // topLeft
+                                // topLeft
                                 offset: Offset(-1.5, 1.5),
                                 color: Colors.black),
                           ],
@@ -205,48 +181,126 @@ class _FollowerGamePageState extends State<FollowerGamePage>
                         style: TextStyle(color: Colors.white),
                       ),
                       Visibility(
-                        child: FlatButton(
-                          onPressed: () => _answerMore(),
-                          child: Text('Mehr',
-                            style: TextStyle(
-                              inherit: true,
-                              fontSize: 18.0,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  // bottomLeft
-                                    offset: Offset(-1.5, -1.5),
-                                    color: Colors.black),
-                                Shadow(
-                                  // bottomRight
-                                    offset: Offset(1.5, -1.5),
-                                    color: Colors.black),
-                                Shadow(
-                                  // topRight
-                                    offset: Offset(1.5, 1.5),
-                                    color: Colors.black),
-                                Shadow(
-                                  // topLeft
-                                    offset: Offset(-1.5, 1.5),
-                                    color: Colors.black),
-                              ],
+                        child: SizedBox(
+                          width: 130,
+                          child: FlatButton.icon(
+                            onPressed: () => _answerMore(),
+                            icon: Icon(Icons.arrow_drop_up, color: Colors.white),
+                            label: Text(
+                              'Mehr',
+                              style: TextStyle(
+                                inherit: true,
+                                fontSize: 18.0,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                      // bottomLeft
+                                      offset: Offset(-1.5, -1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // bottomRight
+                                      offset: Offset(1.5, -1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // topRight
+                                      offset: Offset(1.5, 1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // topLeft
+                                      offset: Offset(-1.5, 1.5),
+                                      color: Colors.black),
+                                ],
+                              ),
                             ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.white),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white),
+                            ),
                           ),
                         ),
                         visible: !followerVisible,
                       ),
                       Visibility(
+                        child: SizedBox(
+                          width: 130,
+                          child: FlatButton.icon(
+                            onPressed: () => _answerLess(),
+                            icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                            label: Text(
+                              'Weniger',
+                              style: TextStyle(
+                                inherit: true,
+                                fontSize: 18.0,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                      // bottomLeft
+                                      offset: Offset(-1.5, -1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // bottomRight
+                                      offset: Offset(1.5, -1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // topRight
+                                      offset: Offset(1.5, 1.5),
+                                      color: Colors.black),
+                                  Shadow(
+                                      // topLeft
+                                      offset: Offset(-1.5, 1.5),
+                                      color: Colors.black),
+                                ],
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        visible: !followerVisible,
+                      ),
+                      Visibility(
+                        child: Text(
+                          '${bottomArtistFollowerFormatter.nonSymbol}',
+                          style: TextStyle(
+                            inherit: true,
+                            fontSize: 24.0,
+                            color: Colors.yellowAccent.shade700,
+                            shadows: [
+                              Shadow(
+                                  // bottomLeft
+                                  offset: Offset(-1.5, -1.5),
+                                  color: Colors.black),
+                              Shadow(
+                                  // bottomRight
+                                  offset: Offset(1.5, -1.5),
+                                  color: Colors.black),
+                              Shadow(
+                                  // topRight
+                                  offset: Offset(1.5, 1.5),
+                                  color: Colors.black),
+                              Shadow(
+                                  // topLeft
+                                  offset: Offset(-1.5, 1.5),
+                                  color: Colors.black),
+                            ],
+                          ),
+                        ),
+                        visible: followerVisible,
+                      ),
+                      Text(
+                        'Follower auf Spotify',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Visibility(
                         child: FlatButton(
-                          onPressed: () => _answerLess(),
+                          onPressed: () => _nextRound(),
                           child: Text(
-                            'Weniger',
+                            'Weiter',
                             style: TextStyle(
                               inherit: true,
-                              fontSize: 18.0,
+                              fontSize: 24.0,
                               color: Colors.white,
                               shadows: [
                                 Shadow(
@@ -273,74 +327,6 @@ class _FollowerGamePageState extends State<FollowerGamePage>
                             side: BorderSide(color: Colors.white),
                           ),
                         ),
-                        visible: !followerVisible,
-                      ),
-                      Visibility(
-                        child: Text(
-                          '${bottomArtistFollowerFormatter.nonSymbol}',
-                          style: TextStyle(
-                            inherit: true,
-                            fontSize: 24.0,
-                            color: Colors.yellowAccent.shade700,
-                            shadows: [
-                              Shadow(
-                                // bottomLeft
-                                  offset: Offset(-1.5, -1.5),
-                                  color: Colors.black),
-                              Shadow(
-                                // bottomRight
-                                  offset: Offset(1.5, -1.5),
-                                  color: Colors.black),
-                              Shadow(
-                                // topRight
-                                  offset: Offset(1.5, 1.5),
-                                  color: Colors.black),
-                              Shadow(
-                                // topLeft
-                                  offset: Offset(-1.5, 1.5),
-                                  color: Colors.black),
-                            ],
-                          ),
-                        ),
-                        visible: followerVisible,
-                      ),
-                      Text(
-                        'Follower auf Spotify',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Visibility(
-                        child: FlatButton(
-                          onPressed: () => _nextRound(),
-                          child: Text('Weiter',
-                            style: TextStyle(
-                              inherit: true,
-                              fontSize: 24.0,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  // bottomLeft
-                                    offset: Offset(-1.5, -1.5),
-                                    color: Colors.black),
-                                Shadow(
-                                  // bottomRight
-                                    offset: Offset(1.5, -1.5),
-                                    color: Colors.black),
-                                Shadow(
-                                  // topRight
-                                    offset: Offset(1.5, 1.5),
-                                    color: Colors.black),
-                                Shadow(
-                                  // topLeft
-                                    offset: Offset(-1.5, 1.5),
-                                    color: Colors.black),
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.white),
-                          ),
-                        ),
                         visible: followerVisible,
                       ),
                     ],
@@ -354,18 +340,31 @@ class _FollowerGamePageState extends State<FollowerGamePage>
     );
   }
 
-  void _nextRound() {
+  void _nextRound() async {
     setState(() {
       followerVisible = false;
       highscorePoints++;
-      topArtist = bottomArtist;
-      bottomArtist = random2.nextInt(widget.artist.length - 1);
+    });
+    while (nextArtist != widget.artistList.length - 2) {
+      nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length - 1);
+    }
+    var credentials =
+        new spotifyApi.SpotifyApiCredentials('b9754ebac220485796ecd4b460193fe9', '5d7d58000a0841e6b133baa0f19a405b');
+    var spotify = new spotifyApi.SpotifyApi(credentials);
+    var spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
+
+    setState(() {
+      Artist artist = new Artist(spotifyArtist.name, spotifyArtist.images[0].url, spotifyArtist.followers.total);
+      widget.artistList.add(artist);
+      for (int i = 0; i < widget.artistList.length; i++) {
+        print("Name: ${widget.artistList[i].name}");
+        print("Anzahl Follower: ${widget.artistList[i].numberOfFollower}");
+      }
     });
   }
 
   void _answerMore() {
-    if (widget.artist[topArtist].numberOfFollower >
-        widget.artist[bottomArtist].numberOfFollower) {
+    if (widget.artistList[widget.artistList.length - 2].numberOfFollower > widget.artistList.last.numberOfFollower) {
       _wrongAnswer();
     } else {
       _rightAnswer();
@@ -373,15 +372,14 @@ class _FollowerGamePageState extends State<FollowerGamePage>
   }
 
   void _answerLess() {
-    if (widget.artist[topArtist].numberOfFollower <
-        widget.artist[bottomArtist].numberOfFollower) {
+    if (widget.artistList[widget.artistList.length - 2].numberOfFollower < widget.artistList.last.numberOfFollower) {
       _wrongAnswer();
     } else {
       _rightAnswer();
     }
   }
 
-  void _rightAnswer() {
+  void _rightAnswer() async {
     followerVisible = true;
     controller.forward(from: 0.0);
   }
@@ -402,13 +400,29 @@ class _FollowerGamePageState extends State<FollowerGamePage>
           ),*/
               RaisedButton(
                 child: Text('Spiel beenden'),
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainPage())),
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage())),
               ),
             ],
           );
         });
     controller.forward(from: 0.0);
+  }
+
+  void _formatFollowerNumber() {
+    topArtistFollowerFormatter = FlutterMoneyFormatter(
+      amount: widget.artistList[widget.artistList.length - 2].numberOfFollower.toDouble(),
+      settings: MoneyFormatterSettings(
+        thousandSeparator: '.',
+        fractionDigits: 0,
+      ),
+    ).output;
+    bottomArtistFollowerFormatter = FlutterMoneyFormatter(
+      amount: animation.value,
+      settings: MoneyFormatterSettings(
+        thousandSeparator: '.',
+        fractionDigits: 0,
+      ),
+    ).output;
   }
 
   @override

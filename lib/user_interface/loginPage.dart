@@ -6,6 +6,7 @@ import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 import 'package:spotify_more_or_less/user_interface/mainPage.dart';
+import 'package:spotify_more_or_less/helper/systemSettings.dart';
 
 void main() => runApp(SpotifyApp());
 
@@ -30,39 +31,48 @@ class _LoginPageState extends State<LoginPage> {
   ProgressDialog progressDialog;
 
   @override
+  void initState() {
+    super.initState();
+    SystemSettings.allowOnlyPortraitOrientation();
+  }
+
+  @override
   Widget build(BuildContext context) {
     progressDialog = new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
     progressDialog.style(
-        message: 'Login...',
+      message: 'Login...',
       progressWidget: CircularProgressIndicator(),
     );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Spotify More or Less'),
-        backgroundColor: Color.fromARGB(204, 27, 27, 27),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              width: 260,
-              child: GoogleSignInButton(
-                onPressed: () => _signInWithGoogle(),
-                darkMode: true,
-                borderRadius: 10.0,
-                text: 'Anmelden mit Google',
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Spotify More or Less'),
+          backgroundColor: Color.fromARGB(204, 27, 27, 27),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                width: 260,
+                child: GoogleSignInButton(
+                  onPressed: () => _signInWithGoogle(),
+                  darkMode: true,
+                  borderRadius: 10.0,
+                  text: 'Anmelden mit Google',
+                ),
               ),
-            ),
-            SizedBox(
-              width: 260,
-              child: FacebookSignInButton(
-                onPressed: () => _signInWithFacebook(),
-                borderRadius: 10.0,
-                text: 'Anmelden mit Facebook',
+              SizedBox(
+                width: 260,
+                child: FacebookSignInButton(
+                  onPressed: () => _signInWithFacebook(),
+                  borderRadius: 10.0,
+                  text: 'Anmelden mit Facebook',
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -71,19 +81,16 @@ class _LoginPageState extends State<LoginPage> {
   Future<String> _signInWithGoogle() async {
     progressDialog.show();
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
-        idToken: googleSignInAuthentication.idToken,
-        accessToken: googleSignInAuthentication.accessToken);
+        idToken: googleSignInAuthentication.idToken, accessToken: googleSignInAuthentication.accessToken);
     final AuthResult authResult = await _auth.signInWithCredential(credential);
     final FirebaseUser user = authResult.user;
     final FirebaseUser currentUser = await _auth.currentUser();
     print("Angemeldet über Google mit " + currentUser.email);
     Future.delayed(Duration(seconds: 1)).then((value) {
       progressDialog.hide().whenComplete(() {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MainPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
       });
     });
     return 'signInWithGoogle erfolgreich: $user';

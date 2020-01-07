@@ -4,6 +4,7 @@ import 'package:spotify_more_or_less/user_interface/profilPage.dart';
 import 'package:spotify_more_or_less/user_interface/highscorePage.dart';
 import 'package:spotify_more_or_less/user_interface/categoryPage.dart';
 import 'package:spotify_more_or_less/user_interface/shopPage.dart';
+import 'package:spotify_more_or_less/helper/systemSettings.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -22,8 +23,15 @@ class _MainPageState extends State<MainPage> {
   final PageStorageBucket bucket = PageStorageBucket();
 
   @override
+  void initState() {
+    super.initState();
+    SystemSettings.allowOnlyPortraitOrientation();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: PageStorage(bucket: bucket, child: currentScreen),
         floatingActionButton: FloatingActionButton(
