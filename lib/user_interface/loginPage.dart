@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
@@ -87,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
     final AuthResult authResult = await _auth.signInWithCredential(credential);
     final FirebaseUser user = authResult.user;
     final FirebaseUser currentUser = await _auth.currentUser();
+    _createUserInCloudFirestore(currentUser);
     print("Angemeldet über Google mit " + currentUser.email);
     Future.delayed(Duration(milliseconds: 100)).then((value) {
       _progressDialog.hide().whenComplete(() {
@@ -98,5 +100,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _signInWithFacebook() async {
     // TODO Facebook Login implementieren.
+  }
+  
+  void _createUserInCloudFirestore(FirebaseUser currentUser) {
+    Firestore.instance.collection('users').document(currentUser.uid).setData({'e-mail': currentUser.email, 'hpWorldwide': '0'});
   }
 }
