@@ -23,6 +23,7 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
   Animation<double> animation;
   bool followerVisible = false;
   bool furtherVisible = false;
+  bool wrongAnswer = false;
   int highscorePoints = 0;
   int currentArtist = 0;
   var spotifyArtist;
@@ -40,9 +41,16 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
     credentials =
         new spotifyApi.SpotifyApiCredentials('b9754ebac220485796ecd4b460193fe9', '5d7d58000a0841e6b133baa0f19a405b');
     spotify = new spotifyApi.SpotifyApi(credentials);
-    controller = AnimationController(duration: const Duration(seconds: 5), vsync: this);
+    controller = AnimationController(duration: const Duration(seconds: 3), vsync: this);
     controller.addListener(() {
       this.setState(() {});
+      if (controller.isCompleted) {
+        if (wrongAnswer == false) {
+          furtherVisible = true;
+        } else {
+          _showGameEndDialog();
+        }
+      }
     });
   }
 
@@ -351,10 +359,6 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
     setState(() {
       Artist artist = new Artist(spotifyArtist.name, spotifyArtist.images[0].url, spotifyArtist.followers.total);
       widget.artistList.add(artist);
-      /*for (int i = 0; i < widget.artistList.length; i++) {
-        print("Name: ${widget.artistList[i].name}");
-        print("Anzahl Follower: ${widget.artistList[i].numberOfFollower}");
-      }*/
       followerVisible = false;
       furtherVisible = false;
     });
@@ -376,23 +380,28 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
     }
   }
 
-  void _rightAnswer() async {
-    followerVisible = true;
-    controller.forward(from: 0.0);
-    int nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length);
-    spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
-    while (spotifyArtist.name == widget.artistList.last.name) {
-      nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length);
+  Future<void> _rightAnswer() async {
+    try {
+      followerVisible = true;
+      controller.forward(from: 0.0);
+      int nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length);
       spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
+      while (spotifyArtist.name == widget.artistList.last.name) {
+        nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length);
+        spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
+      }
+    } catch (error) {
+      print('Error: $error');
     }
-    setState(() {
-      furtherVisible = true;
-    });
   }
 
   void _wrongAnswer() {
+    wrongAnswer = true;
     followerVisible = true;
     controller.forward(from: 0.0);
+  }
+
+  void _showGameEndDialog() {
     showDialog(
         context: context,
         barrierDismissible: false,

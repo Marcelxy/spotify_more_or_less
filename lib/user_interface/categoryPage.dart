@@ -36,24 +36,32 @@ class _CategoryPageState extends State<CategoryPage> {
         title: Text('Kategorien'),
         backgroundColor: Color.fromARGB(204, 27, 27, 27),
       ),
-      body: GridView.builder(
-          itemCount: Categories.categories.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          itemBuilder: (BuildContext context, int index) {
-            return GestureDetector(
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Card(
-                  elevation: 5.0,
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Text('${Categories.categories[index]}'),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [Color.fromARGB(154, 27, 27, 27), Color.fromARGB(204, 27, 27, 27)],
+          begin: Alignment.bottomRight,
+          end: Alignment.topLeft)
+        ),
+        height: 800,
+        child: GridView.builder(
+            itemCount: Categories.categories.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                child: Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Card(
+                    elevation: 5.0,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('${Categories.categories[index]}'),
+                    ),
                   ),
                 ),
-              ),
-              onTap: () => _chooseCategory(),
-            );
-          }),
+                onTap: () => _chooseCategory(),
+              );
+            }),
+      ),
     );
   }
 
@@ -84,10 +92,6 @@ class _CategoryPageState extends State<CategoryPage> {
     artistList.add(firstArtist);
     artistList.add(secondArtist);
 
-    /*for (int i = 0; i < artistList.length; i++) {
-      print("Name: ${artistList[i].name}");
-      print("Anzahl Follower: ${artistList[i].numberOfFollower}");
-    }*/
     Future.delayed(Duration(milliseconds: 100)).then((value) {
       _progressDialog.hide().whenComplete(() {
         Navigator.push(context, MaterialPageRoute(builder: (context) => FollowerGamePage(artistList)));

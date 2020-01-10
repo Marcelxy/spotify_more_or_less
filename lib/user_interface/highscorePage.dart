@@ -18,13 +18,15 @@ class _HighscorePageState extends State<HighscorePage> {
 
   @override
   Widget build(BuildContext context) {
+    Query userReference = Firestore.instance.collection('users').orderBy('hpWorldwide', descending: true).limit(10);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Ranglisten'),
           backgroundColor: Color.fromARGB(204, 27, 27, 27),
         ),
         body: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('users').snapshots(),
+          stream: userReference.snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) return Text('Error: ${snapshot.error}');
             switch (snapshot.connectionState) {
@@ -33,9 +35,18 @@ class _HighscorePageState extends State<HighscorePage> {
               default:
                 return ListView(
                   children: snapshot.data.documents.map((DocumentSnapshot document) {
-                    return ListTile(
-                      title: Text(document['e-mail']),
-                      subtitle: Text(document['hpWorldwide']),
+                    return Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                        bottom: BorderSide(width: 0.5),
+                      )),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          child: Text(document['e-mail'][0]),
+                        ),
+                        title: Text(document['e-mail']),
+                        subtitle: Text(document['hpWorldwide'].toString()),
+                      ),
                     );
                   }).toList(),
                 );

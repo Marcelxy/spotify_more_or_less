@@ -103,6 +103,6 @@ class _LoginPageState extends State<LoginPage> {
   }
   
   void _createUserInCloudFirestore(FirebaseUser currentUser) {
-    Firestore.instance.collection('users').document(currentUser.uid).setData({'e-mail': currentUser.email, 'hpWorldwide': '0'});
+    Firestore.instance.collection('users').document(currentUser.uid).setData({'e-mail': currentUser.email, 'hpWorldwide': 0});
   }
 }
