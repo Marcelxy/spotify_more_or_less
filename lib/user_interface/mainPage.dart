@@ -36,16 +36,18 @@ class _MainPageState extends State<MainPage> {
         body: PageStorage(bucket: bucket, child: currentScreen),
         floatingActionButton: FloatingActionButton(
           onPressed: null,
+          disabledElevation: 1.5,
           backgroundColor: Color.fromARGB(204, 27, 27, 27),
-          child: Icon(Icons.play_arrow),
+          child: Icon(Icons.favorite),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
-          notchMargin: 9,
+          notchMargin: 7,
           elevation: 15,
-          color: Color.fromARGB(204, 27, 27, 27),
+          color: Color.fromARGB(40, 27, 27, 27),
           child: Container(
+            color: Color.fromARGB(218, 0, 0, 0),
             height: 50,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

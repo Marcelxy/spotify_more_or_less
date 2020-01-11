@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:spotify_more_or_less/datastructures/artist.dart';
 import 'package:spotify_more_or_less/user_interface/mainPage.dart';
-import 'package:spotify_more_or_less/datastructures/globalArtists.dart';
 import 'package:spotify_more_or_less/helper/systemSettings.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,7 +11,8 @@ import 'package:spotify/spotify_io.dart' as spotifyApi;
 
 class FollowerGamePage extends StatefulWidget {
   final List<Artist> artistList;
-  FollowerGamePage(this.artistList);
+  final List<String> artistIdList;
+  FollowerGamePage(this.artistList, this.artistIdList);
 
   @override
   _FollowerGamePageState createState() => _FollowerGamePageState();
@@ -81,8 +81,8 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
                 Center(
                   child: CachedNetworkImage(
                     imageUrl: widget.artistList[widget.artistList.length - 2].image,
-                    placeholder: (context, url) => new CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => new Icon(Icons.error),
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
                 Center(
@@ -156,8 +156,8 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
                 Center(
                   child: CachedNetworkImage(
                     imageUrl: widget.artistList.last.image,
-                    placeholder: (context, url) => new CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => new Icon(Icons.error),
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
                 Center(
@@ -384,11 +384,11 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
     try {
       followerVisible = true;
       controller.forward(from: 0.0);
-      int nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length);
-      spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
+      int nextArtist = random.nextInt(widget.artistIdList.length);
+      spotifyArtist = await spotify.artists.get(widget.artistIdList[nextArtist]);
       while (spotifyArtist.name == widget.artistList.last.name) {
-        nextArtist = random.nextInt(GlobalArtists.spotifyArtistId.length);
-        spotifyArtist = await spotify.artists.get(GlobalArtists.spotifyArtistId[nextArtist]);
+        nextArtist = random.nextInt(widget.artistIdList.length);
+        spotifyArtist = await spotify.artists.get(widget.artistIdList[nextArtist]);
       }
     } catch (error) {
       print('Error: $error');

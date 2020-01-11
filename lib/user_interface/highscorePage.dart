@@ -31,7 +31,7 @@ class _HighscorePageState extends State<HighscorePage> {
             if (snapshot.hasError) return Text('Error: ${snapshot.error}');
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return Center(child: Text('Loading...'));
+                return Center(child: CircularProgressIndicator());
               default:
                 return ListView(
                   children: snapshot.data.documents.map((DocumentSnapshot document) {
