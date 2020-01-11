@@ -17,9 +17,20 @@ class _ShopPageState extends State<ShopPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-      title: Text('Shop'),
-      backgroundColor: Color.fromARGB(204, 27, 27, 27),
-    ));
+      appBar: AppBar(
+        title: Text('Shop'),
+        backgroundColor: Color.fromARGB(204, 27, 27, 27),
+      ),
+      body: Container(
+        color: Color.fromARGB(218, 0, 0, 0),
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              child: Center(child: Text('Test')),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

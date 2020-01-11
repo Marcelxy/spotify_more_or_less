@@ -20,13 +20,24 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-      title: Text('Profil'),
-      backgroundColor: Color.fromARGB(204, 27, 27, 27),
-      actions: <Widget>[
-        IconButton(icon: Icon(Icons.input), onPressed: () => _signOut()),
-      ],
-    ));
+      appBar: AppBar(
+        title: Text('Profil'),
+        backgroundColor: Color.fromARGB(204, 27, 27, 27),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.input), onPressed: () => _signOut()),
+        ],
+      ),
+      body: Container(
+        color: Color.fromARGB(218, 0, 0, 0),
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              child: Center(child: Text('Test')),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _signOut() async {

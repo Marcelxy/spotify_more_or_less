@@ -20,6 +20,17 @@ class SpotifyIdArtistsList {
     '53XhwfbYqKCa1cC15pYq2q', // Imagine Dragons
     '6jJ0s89eD6GaHleKKya26X', // Katy Perry
     '2NjfBq1NflQcKSeiDooVjY', // Tones and I
+    '4gzpq5DPGxSnKTe4SA8HAU', // Coldplay
+    '711MCceyCBcFnzjGY4Q7Un', // AC/DC
+    '6wWVKhxIU2cEi0K81v7HvP', // Rammstein
+    '79bxUQsBIXO8nVLB9fYKf7', // Modern Talking
+    '4bL2B6hmLlMWnUEZnorEtG', // Felix Jaehn
+    '3t5xRXzsuZmMDkQzgOX35S', // Robin Schulz
+    '3WrFJ7ztbogyGnTHbHJFl2', // Beatles
+    '0k17h0D3J5VfsdmQ1iZtE9', // Pink Floyd
+    '22bE4uQ6baNwSHPVcDxLCe', // The Rolling Stones
+    '2DaxqgrOhkeH0fpeiQq2f4', // Oasis
+    '1dfeR4HaWDbWqFHLkxsg1d', // Queen
   ];
 
   // Künstler Quelle: https://de.wikipedia.org/wiki/Liste_der_deutschen_Nummer-eins-Hits_im_Ausland
@@ -111,5 +122,31 @@ class SpotifyIdArtistsList {
     '568ZhdwyaiCyOGJRtNYhWf', // Deep Purple
     '4Z8W4fKeB5YxbusRsdQVPb', // Radiohead
     '7KMqksf0UMdyA0UCf4R3ux', // James Blunt
+  ];
+
+  static List<String> eightyArtistIds = [
+    '1dfeR4HaWDbWqFHLkxsg1d', // Queen
+    '5NGO30tJxFlKixkPSgXcFE', // The Police
+    '3qm84nBOXUEQ2vnTfUTTFC', // Guns N' Roses
+    '6mdiAmATAx73kdxrNrnlao', // Iron Maiden
+    '0lZoBs4Pzo7R89JM9lxwoT', // Duran Duran
+    '711MCceyCBcFnzjGY4Q7Un', // AC/DC
+    '2cnMpRsOVqtPMfq7YiFE6K', // Van Halen
+    '6H1RjVyNruCmrBEWRbD0VZ', // Def Leppard
+    '0WwSkZ7LtFUFjGjMZBMt6T', // Dire Straits
+    '3CkvROUTQ6nRi9yQOcsB50', // Genesis
+    '6kz53iCdBSqhQCZ21CoLcc', // Culture Club
+    '2x9SpqnPi8rlE9pjHBwmSC', // Talking Heads
+    '77tT1kLj6mCWtFNqiOmP9H', // Daryl Hall & John Oates
+    '7bu3H8JO7d0UbMoVzbo70s', // The Cure
+    '0rvjqX7ttXeg3mTy8Xscbt', // Journey
+    '7A9yZMTrFZcgEWAX2kBfK6', // Huey Lewis & The News
+    '0NKDgy9j66h3DLnN8qu1bB', // Eurythmics
+    '762310PdDnwsDxAQxzQkfX', // Depeche Mode
+    '4bthk9UfsYUYdcFyqxmSUU', // Tears for Fears
+    '0PFtn5NtBbbUNbU9EAmIWF', // Toto
+    '2jzc5TC5TVFLXQlBNiIUzE', // A-ha
+    '0SD4eZCN4Kr0wQk56hCdh2', // Bonnie Tyler
+    '3PhoLpVuITZKcymswpck5b', // Elton John
   ];
 }

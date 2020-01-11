@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     SystemSettings.allowOnlyPortraitOrientation();
     _progressDialog =
-    new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
+        new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: true, showLogs: false);
     _progressDialog.style(
       message: 'Login...',
     );
@@ -101,8 +101,11 @@ class _LoginPageState extends State<LoginPage> {
   void _signInWithFacebook() async {
     // TODO Facebook Login implementieren.
   }
-  
+
   void _createUserInCloudFirestore(FirebaseUser currentUser) {
-    Firestore.instance.collection('users').document(currentUser.uid).setData({'e-mail': currentUser.email, 'hpWorldwide': 0});
+    Firestore.instance
+        .collection('users')
+        .document(currentUser.uid)
+        .setData({'e-mail': currentUser.email, 'hpWorldwide': 0, 'hpGermany': 0, 'hpGreatBritain': 0});
   }
 }

@@ -1,13 +1,13 @@
 class Categories {
   static List<String> categories = [
     'Weltweit',
-    'Deutsch',
+    'Deutschland',
     'Großbritannien',
-    'Spanisch',
-    'Italienisch',
-    'Brasilianisch',
-    'Französisch',
-    'Russisch',
+    '80er',
+    '90er',
+    'Pop',
+    'Rock',
+    'Indie',
   ];
 
   // Hex Codes für Farben: http://www.farb-tabelle.de/de/farbtabelle.htm

@@ -154,6 +154,10 @@ class _CategoryPageState extends State<CategoryPage> {
         print('${SpotifyIdArtistsList.greatBritainArtistIds.length}');
         return SpotifyIdArtistsList.greatBritainArtistIds;
         break;
+      case 3:
+        print('${SpotifyIdArtistsList.eightyArtistIds.length}');
+        return SpotifyIdArtistsList.eightyArtistIds;
+        break;
       default:
         print('Falsche Index Übergabe bei Auswahl der SpotifyIdAtristList aufgetreten.');
     }
