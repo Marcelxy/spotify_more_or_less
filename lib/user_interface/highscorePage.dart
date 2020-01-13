@@ -27,11 +27,6 @@ class _HighscorePageState extends State<HighscorePage> {
     Query userReference = Firestore.instance.collection('users').orderBy(_selectedCategorie, descending: true).limit(10);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Ranglisten'),
-          centerTitle: true,
-          backgroundColor: Color.fromARGB(204, 27, 27, 27),
-        ),
         body: Container(
           color: Color.fromARGB(218, 0, 0, 0),
           child: Column(

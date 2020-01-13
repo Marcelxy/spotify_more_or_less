@@ -32,11 +32,6 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Kategorien'),
-        centerTitle: true,
-        backgroundColor: Color.fromARGB(200, 0, 0, 0),
-      ),
       body: Container(
         color: Color.fromARGB(218, 0, 0, 0),
         child: GridView.builder(

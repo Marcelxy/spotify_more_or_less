@@ -63,11 +63,6 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
       title: 'Spotify More or Less',
       home: Scaffold(
         backgroundColor: Color.fromARGB(204, 27, 27, 27),
-        appBar: AppBar(
-          title: Text('Spotify More or Less'),
-          centerTitle: true,
-          backgroundColor: Color.fromARGB(204, 27, 27, 27),
-        ),
         body: Center(
             child: Column(
           children: <Widget>[
