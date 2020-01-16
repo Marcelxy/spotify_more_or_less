@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 import 'package:spotify_more_or_less/datastructures/artist.dart';
+import 'package:spotify_more_or_less/datastructures/credentials.dart';
 import 'package:spotify_more_or_less/user_interface/mainPage.dart';
 import 'package:spotify_more_or_less/helper/systemSettings.dart';
 
@@ -24,12 +24,10 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
   bool followerVisible = false;
   bool furtherVisible = false;
   bool wrongAnswer = false;
-  int highscorePoints = 0;
-  int currentArtist = 0;
+  int highscorePoints;
+  int currentPoints;
   var spotifyArtist;
-  var credentials;
   var spotify;
-  Random random = new Random();
 
   MoneyFormatterOutput topArtistFollowerFormatter;
   MoneyFormatterOutput bottomArtistFollowerFormatter;
@@ -38,19 +36,21 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
   void initState() {
     super.initState();
     SystemSettings.allowOnlyPortraitOrientation();
-    credentials =
-        new spotifyApi.SpotifyApiCredentials('b9754ebac220485796ecd4b460193fe9', '5d7d58000a0841e6b133baa0f19a405b');
+    currentPoints = 0;
+    highscorePoints = 0;
+    var credentials = new spotifyApi.SpotifyApiCredentials(Credentials.clientId, Credentials.clientSecret);
     spotify = new spotifyApi.SpotifyApi(credentials);
     controller = AnimationController(duration: const Duration(seconds: 3), vsync: this);
     controller.addListener(() {
-      this.setState(() {});
-      if (controller.isCompleted) {
-        if (wrongAnswer == false) {
-          furtherVisible = true;
-        } else {
-          _showGameEndDialog();
+      this.setState(() {
+        if (controller.isCompleted) {
+          if (wrongAnswer == false) {
+            furtherVisible = true;
+          } else {
+            _showGameEndDialog();
+          }
         }
-      }
+      });
     });
   }
 
@@ -66,9 +66,25 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
         body: Center(
             child: Column(
           children: <Widget>[
-            Text(
-              'Highscore: $highscorePoints',
-              style: TextStyle(color: Colors.white),
+            Center(
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(63.0, 35.0, 0.0, 10.0),
+                    child: Text(
+                      'Punktzahl: $currentPoints',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(63.0, 35.0, 0.0, 10.0),
+                    child: Text(
+                      'Highscore: $highscorePoints',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Flexible(
               flex: 1,
@@ -349,14 +365,16 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
     );
   }
 
-  void _nextRound() async {
-    highscorePoints++;
-    setState(() {
+  void _nextRound() {
+    if (spotifyArtist.name != null) {
       Artist artist = new Artist(spotifyArtist.name, spotifyArtist.images[0].url, spotifyArtist.followers.total);
       widget.artistList.add(artist);
-      followerVisible = false;
-      furtherVisible = false;
-    });
+      setState(() {
+        currentPoints++;
+        followerVisible = false;
+        furtherVisible = false;
+      });
+    }
   }
 
   void _answerMore() {
@@ -379,12 +397,7 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
     try {
       followerVisible = true;
       controller.forward(from: 0.0);
-      int nextArtist = random.nextInt(widget.artistIdList.length);
-      spotifyArtist = await spotify.artists.get(widget.artistIdList[nextArtist]);
-      while (spotifyArtist.name == widget.artistList.last.name) {
-        nextArtist = random.nextInt(widget.artistIdList.length);
-        spotifyArtist = await spotify.artists.get(widget.artistIdList[nextArtist]);
-      }
+      spotifyArtist = await spotify.artists.get(widget.artistIdList[widget.artistList.length]);
     } catch (error) {
       print('Error: $error');
     }
@@ -403,7 +416,7 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Falsche Antwort'),
-            content: Text('Erreichte Punktzahl: $highscorePoints'),
+            content: Text('Erreichte Punktzahl: $currentPoints'),
             actions: <Widget>[
               /* TODO direkt neues Spiel starten implementieren.
           RaisedButton(

@@ -7,6 +7,7 @@ import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 import 'package:spotify_more_or_less/user_interface/mainPage.dart';
+import 'package:spotify_more_or_less/datastructures/user.dart';
 import 'package:spotify_more_or_less/helper/systemSettings.dart';
 
 void main() => runApp(SpotifyApp());
@@ -99,9 +100,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _createUserInCloudFirestore(FirebaseUser currentUser) {
+    Map<String, int> map = {'worldwide': 0, 'germany': 0, 'greatBritain': 0, 'eighty': 0};
+    User user = new User(currentUser.email, map);
     Firestore.instance
         .collection('users')
         .document(currentUser.uid)
-        .setData({'e-mail': currentUser.email, 'hpWorldwide': 0, 'hpGermany': 0, 'hpGreatBritain': 0});
+        .setData({'e-mail': user.email, 'highscorePoints': map});
   }
 }

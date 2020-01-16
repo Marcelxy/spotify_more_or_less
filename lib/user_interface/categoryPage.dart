@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:spotify/spotify_io.dart' as spotifyApi;
@@ -8,6 +7,7 @@ import 'package:spotify_more_or_less/datastructures/artist.dart';
 import 'package:spotify_more_or_less/user_interface/followerGamePage.dart';
 import 'package:spotify_more_or_less/datastructures/spotifyIdArtists.dart';
 import 'package:spotify_more_or_less/datastructures/categories.dart';
+import 'package:spotify_more_or_less/datastructures/credentials.dart';
 import 'package:spotify_more_or_less/helper/systemSettings.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -35,7 +35,7 @@ class _CategoryPageState extends State<CategoryPage> {
       body: Container(
         color: Color.fromARGB(218, 0, 0, 0),
         child: GridView.builder(
-            padding: EdgeInsets.only(top: 30.0),
+            padding: EdgeInsets.only(top: 80.0),
             itemCount: Categories.categories.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
             itemBuilder: (BuildContext context, int index) {
@@ -101,31 +101,19 @@ class _CategoryPageState extends State<CategoryPage> {
 
   void _startGame(int index) async {
     _progressDialog.show();
-    List<String> spotifyIdArtistList = _chooseSpotifyIdArtistList(index);
     var credentials =
-        new spotifyApi.SpotifyApiCredentials('b9754ebac220485796ecd4b460193fe9', '5d7d58000a0841e6b133baa0f19a405b');
+        new spotifyApi.SpotifyApiCredentials(Credentials.clientId, Credentials.clientSecret);
     var spotify = new spotifyApi.SpotifyApi(credentials);
 
+    List<String> spotifyIdArtistList = _chooseSpotifyIdArtistList(index);
+    spotifyIdArtistList.shuffle();
+
     List<Artist> artistList = new List<Artist>();
-    Random firstRandom = new Random();
-    Random secondRandom = new Random();
-
-    int firstRandomArtist = firstRandom.nextInt(spotifyIdArtistList.length);
-    int secondRandomArtist = secondRandom.nextInt(spotifyIdArtistList.length);
-    var firstSpotifyArtist = await spotify.artists.get(spotifyIdArtistList[firstRandomArtist]);
-    var secondSpotifyArtist = await spotify.artists.get(spotifyIdArtistList[secondRandomArtist]);
-
-    while (firstSpotifyArtist.name == secondSpotifyArtist.name) {
-      secondRandomArtist = secondRandom.nextInt(spotifyIdArtistList.length);
-      secondSpotifyArtist = await spotify.artists.get(spotifyIdArtistList[secondRandomArtist]);
+    for (int i = 0; i < 2; i++) {
+      var spotifyArtist = await spotify.artists.get(spotifyIdArtistList[i]);
+      Artist artist = new Artist(spotifyArtist.name, spotifyArtist.images[0].url, spotifyArtist.followers.total);
+      artistList.add(artist);
     }
-
-    Artist firstArtist =
-        new Artist(firstSpotifyArtist.name, firstSpotifyArtist.images[0].url, firstSpotifyArtist.followers.total);
-    Artist secondArtist =
-        new Artist(secondSpotifyArtist.name, secondSpotifyArtist.images[0].url, secondSpotifyArtist.followers.total);
-    artistList.add(firstArtist);
-    artistList.add(secondArtist);
 
     Future.delayed(Duration(milliseconds: 100)).then((value) {
       _progressDialog.hide().whenComplete(() {
@@ -138,19 +126,15 @@ class _CategoryPageState extends State<CategoryPage> {
   List<String> _chooseSpotifyIdArtistList(int index) {
     switch (index) {
       case 0:
-        print('${SpotifyIdArtistsList.globalArtistIds.length}');
         return SpotifyIdArtistsList.globalArtistIds;
         break;
       case 1:
-        print('${SpotifyIdArtistsList.germanArtistIds.length}');
         return SpotifyIdArtistsList.germanArtistIds;
         break;
       case 2:
-        print('${SpotifyIdArtistsList.greatBritainArtistIds.length}');
         return SpotifyIdArtistsList.greatBritainArtistIds;
         break;
       case 3:
-        print('${SpotifyIdArtistsList.eightyArtistIds.length}');
         return SpotifyIdArtistsList.eightyArtistIds;
         break;
       default:
