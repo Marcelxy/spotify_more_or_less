@@ -10,9 +10,10 @@ import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:spotify/spotify_io.dart' as spotifyApi;
 
 class FollowerGamePage extends StatefulWidget {
+  int highscorePoints;
   final List<Artist> artistList;
   final List<String> artistIdList;
-  FollowerGamePage(this.artistList, this.artistIdList);
+  FollowerGamePage(this.artistList, this.artistIdList, this.highscorePoints);
 
   @override
   _FollowerGamePageState createState() => _FollowerGamePageState();
@@ -24,7 +25,6 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
   bool followerVisible = false;
   bool furtherVisible = false;
   bool wrongAnswer = false;
-  int highscorePoints;
   int currentPoints;
   var spotifyArtist;
   var spotify;
@@ -37,7 +37,6 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
     super.initState();
     SystemSettings.allowOnlyPortraitOrientation();
     currentPoints = 0;
-    highscorePoints = 0;
     var credentials = new spotifyApi.SpotifyApiCredentials(Credentials.clientId, Credentials.clientSecret);
     spotify = new spotifyApi.SpotifyApi(credentials);
     controller = AnimationController(duration: const Duration(seconds: 3), vsync: this);
@@ -79,7 +78,7 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
                   Padding(
                     padding: const EdgeInsets.fromLTRB(63.0, 35.0, 0.0, 10.0),
                     child: Text(
-                      'Highscore: $highscorePoints',
+                      'Highscore: ${widget.highscorePoints}',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

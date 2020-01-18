@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _createUserInCloudFirestore(FirebaseUser currentUser) {
-    Map<String, int> map = {'worldwide': 0, 'germany': 0, 'greatBritain': 0, 'eighty': 0};
+    Map<String, int> map = {'global': 0, 'germany': 0, 'greatBritain': 0, 'eighty': 0};
     User user = new User(currentUser.email, map);
     Firestore.instance
         .collection('users')

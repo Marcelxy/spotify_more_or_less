@@ -19,7 +19,7 @@ class _HighscorePageState extends State<HighscorePage> {
     super.initState();
     SystemSettings.allowOnlyPortraitOrientation();
     _selectedDropdownItem = Categories.categories[0];
-    selectedCategorie = 'worldwide';
+    selectedCategorie = 'global';
   }
 
   @override
@@ -63,6 +63,7 @@ class _HighscorePageState extends State<HighscorePage> {
                       children: snapshot.data.documents.map((DocumentSnapshot document) {
                         List<dynamic> highscores =
                             snapshot.data.documents[snapshot.data.documents.indexOf(document)].data.values.toList();
+                        print(highscores);
                         return Container(
                           decoration: BoxDecoration(
                               border: Border(
@@ -99,7 +100,7 @@ class _HighscorePageState extends State<HighscorePage> {
   void _chooseHighscoreList(int index) {
     switch (index) {
       case 0:
-        selectedCategorie = 'worldwide';
+        selectedCategorie = 'global';
         break;
       case 1:
         selectedCategorie = 'germany';

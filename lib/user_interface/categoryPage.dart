@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spotify/spotify_io.dart' as spotifyApi;
 
 import 'package:spotify_more_or_less/datastructures/artist.dart';
@@ -16,6 +18,7 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
+  String _highscoreCategorie;
   ProgressDialog _progressDialog;
 
   @override
@@ -105,7 +108,7 @@ class _CategoryPageState extends State<CategoryPage> {
         new spotifyApi.SpotifyApiCredentials(Credentials.clientId, Credentials.clientSecret);
     var spotify = new spotifyApi.SpotifyApi(credentials);
 
-    List<String> spotifyIdArtistList = _chooseSpotifyIdArtistList(index);
+    List<String> spotifyIdArtistList = _chooseCategorieData(index);
     spotifyIdArtistList.shuffle();
 
     List<Artist> artistList = new List<Artist>();
@@ -115,30 +118,46 @@ class _CategoryPageState extends State<CategoryPage> {
       artistList.add(artist);
     }
 
+    int highscorePoints = await _getHighscorePoints();
+    print(highscorePoints);
     Future.delayed(Duration(milliseconds: 100)).then((value) {
       _progressDialog.hide().whenComplete(() {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => FollowerGamePage(artistList, spotifyIdArtistList)));
+            context, MaterialPageRoute(builder: (context) => FollowerGamePage(artistList, spotifyIdArtistList, highscorePoints)));
       });
     });
   }
 
-  List<String> _chooseSpotifyIdArtistList(int index) {
+  List<String> _chooseCategorieData(int index) {
     switch (index) {
       case 0:
+        _highscoreCategorie = 'global';
         return SpotifyIdArtistsList.globalArtistIds;
         break;
       case 1:
+        _highscoreCategorie = 'germany';
         return SpotifyIdArtistsList.germanArtistIds;
         break;
       case 2:
+        _highscoreCategorie = 'greatBritain';
         return SpotifyIdArtistsList.greatBritainArtistIds;
         break;
       case 3:
+        _highscoreCategorie = 'eighty';
         return SpotifyIdArtistsList.eightyArtistIds;
         break;
       default:
         print('Falsche Index Übergabe bei Auswahl der SpotifyIdAtristList aufgetreten.');
+        return null;
     }
+  }
+  
+  Future<int> _getHighscorePoints() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseUser user = await _auth.currentUser();
+    var userData = await Firestore.instance.collection('users').document(user.uid).get();
+    var userDataList = userData.data.values.toList();
+    int highscorePoints = userDataList[1][_highscoreCategorie];
+    return highscorePoints;
   }
 }
