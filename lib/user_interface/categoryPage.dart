@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:spotify/spotify_io.dart' as spotifyApi;
 
 import 'package:spotify_more_or_less/datastructures/artist.dart';
@@ -18,7 +18,7 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  String _highscoreCategorie;
+  String highscoreCategorie;
   ProgressDialog _progressDialog;
 
   @override
@@ -104,8 +104,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
   void _startGame(int index) async {
     _progressDialog.show();
-    var credentials =
-        new spotifyApi.SpotifyApiCredentials(Credentials.clientId, Credentials.clientSecret);
+    var credentials = new spotifyApi.SpotifyApiCredentials(Credentials.clientId, Credentials.clientSecret);
     var spotify = new spotifyApi.SpotifyApi(credentials);
 
     List<String> spotifyIdArtistList = _chooseCategorieData(index);
@@ -119,11 +118,14 @@ class _CategoryPageState extends State<CategoryPage> {
     }
 
     int highscorePoints = await _getHighscorePoints();
-    print(highscorePoints);
+
     Future.delayed(Duration(milliseconds: 100)).then((value) {
       _progressDialog.hide().whenComplete(() {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => FollowerGamePage(artistList, spotifyIdArtistList, highscorePoints)));
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    FollowerGamePage(artistList, spotifyIdArtistList, highscorePoints, highscoreCategorie)));
       });
     });
   }
@@ -131,19 +133,19 @@ class _CategoryPageState extends State<CategoryPage> {
   List<String> _chooseCategorieData(int index) {
     switch (index) {
       case 0:
-        _highscoreCategorie = 'global';
+        highscoreCategorie = 'global';
         return SpotifyIdArtistsList.globalArtistIds;
         break;
       case 1:
-        _highscoreCategorie = 'germany';
+        highscoreCategorie = 'germany';
         return SpotifyIdArtistsList.germanArtistIds;
         break;
       case 2:
-        _highscoreCategorie = 'greatBritain';
+        highscoreCategorie = 'greatBritain';
         return SpotifyIdArtistsList.greatBritainArtistIds;
         break;
       case 3:
-        _highscoreCategorie = 'eighty';
+        highscoreCategorie = 'eighty';
         return SpotifyIdArtistsList.eightyArtistIds;
         break;
       default:
@@ -151,13 +153,16 @@ class _CategoryPageState extends State<CategoryPage> {
         return null;
     }
   }
-  
+
   Future<int> _getHighscorePoints() async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final FirebaseUser user = await _auth.currentUser();
-    var userData = await Firestore.instance.collection('users').document(user.uid).get();
-    var userDataList = userData.data.values.toList();
-    int highscorePoints = userDataList[1][_highscoreCategorie];
-    return highscorePoints;
+    try {
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      final FirebaseUser user = await _auth.currentUser();
+      var userData = await Firestore.instance.collection('users').document(user.uid).get();
+      var userDataList = userData.data.values.toList();
+      return userDataList[1][highscoreCategorie];
+    } catch (e) {
+      print("Error: " + e.toString());
+    }
   }
 }

@@ -108,7 +108,7 @@ class _HighscorePageState extends State<HighscorePage> {
       case 2:
         selectedCategorie = 'greatBritain';
         break;
-      case 2:
+      case 3:
         selectedCategorie = 'eighty';
         break;
       default:

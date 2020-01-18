@@ -5,15 +5,18 @@ import 'package:spotify_more_or_less/datastructures/credentials.dart';
 import 'package:spotify_more_or_less/user_interface/mainPage.dart';
 import 'package:spotify_more_or_less/helper/systemSettings.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 import 'package:spotify/spotify_io.dart' as spotifyApi;
 
 class FollowerGamePage extends StatefulWidget {
-  int highscorePoints;
+  final int highscorePoints;
+  final String highscoreCategorie;
   final List<Artist> artistList;
   final List<String> artistIdList;
-  FollowerGamePage(this.artistList, this.artistIdList, this.highscorePoints);
+  FollowerGamePage(this.artistList, this.artistIdList, this.highscorePoints, this.highscoreCategorie);
 
   @override
   _FollowerGamePageState createState() => _FollowerGamePageState();
@@ -88,11 +91,14 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
             Flexible(
               flex: 1,
               child: Stack(children: <Widget>[
-                Center(
-                  child: CachedNetworkImage(
-                    imageUrl: widget.artistList[widget.artistList.length - 2].image,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                Opacity(
+                  opacity: 0.5,
+                  child: Center(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.artistList[widget.artistList.length - 2].image,
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
                   ),
                 ),
                 Center(
@@ -163,11 +169,14 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
             Flexible(
               flex: 1,
               child: Stack(children: <Widget>[
-                Center(
-                  child: CachedNetworkImage(
-                    imageUrl: widget.artistList.last.image,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                Opacity(
+                  opacity: 0.5,
+                  child: Center(
+                    child: CachedNetworkImage(
+                      imageUrl: widget.artistList.last.image,
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
                   ),
                 ),
                 Center(
@@ -406,6 +415,7 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
     wrongAnswer = true;
     followerVisible = true;
     controller.forward(from: 0.0);
+    _checkNewHighscore();
   }
 
   void _showGameEndDialog() {
@@ -429,6 +439,22 @@ class _FollowerGamePageState extends State<FollowerGamePage> with SingleTickerPr
             ],
           );
         });
+  }
+
+  void _checkNewHighscore() async {
+    if (currentPoints > widget.highscorePoints) {
+      try {
+        final databaseReference = Firestore.instance;
+        final FirebaseAuth _auth = FirebaseAuth.instance;
+        final FirebaseUser user = await _auth.currentUser();
+        databaseReference
+            .collection('users')
+            .document(user.uid)
+            .updateData({'highscorePoints.${widget.highscoreCategorie}': currentPoints});
+      } catch (e) {
+        print("Error: " + e.toString());
+      }
+    }
   }
 
   void _formatFollowerNumber() {
