@@ -63,7 +63,6 @@ class _HighscorePageState extends State<HighscorePage> {
                       children: snapshot.data.documents.map((DocumentSnapshot document) {
                         List<dynamic> highscores =
                             snapshot.data.documents[snapshot.data.documents.indexOf(document)].data.values.toList();
-                        print(highscores);
                         return Container(
                           decoration: BoxDecoration(
                               border: Border(
@@ -110,6 +109,9 @@ class _HighscorePageState extends State<HighscorePage> {
         break;
       case 3:
         selectedCategorie = 'eighty';
+        break;
+      case 4:
+        selectedCategorie = 'ninety';
         break;
       default:
         print('Falsche Index Übergabe bei Auswahl der HighscoreList aufgetreten.');

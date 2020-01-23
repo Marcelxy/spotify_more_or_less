@@ -31,6 +31,8 @@ class SpotifyIdArtistsList {
     '22bE4uQ6baNwSHPVcDxLCe', // The Rolling Stones
     '2DaxqgrOhkeH0fpeiQq2f4', // Oasis
     '1dfeR4HaWDbWqFHLkxsg1d', // Queen
+    '2ye2Wgw4gimLv2eAKyk1NB', // Metallica
+    '7oPftvlwr6VrsViSDV7fJY', // Green Day
   ];
 
   // Künstler Quelle: https://de.wikipedia.org/wiki/Liste_der_deutschen_Nummer-eins-Hits_im_Ausland
@@ -148,5 +150,29 @@ class SpotifyIdArtistsList {
     '2jzc5TC5TVFLXQlBNiIUzE', // A-ha
     '0SD4eZCN4Kr0wQk56hCdh2', // Bonnie Tyler
     '3PhoLpVuITZKcymswpck5b', // Elton John
+    '2ye2Wgw4gimLv2eAKyk1NB', // Metallica
+  ];
+
+  static List<String> ninetyArtistIds = [
+    '5rSXSAkZ67PYJSvpUpkOr7', // Backstreet Boys
+    '0uq5PttqEjj3IH1bzwcrXF', // Spice Girls
+    '6olE6TJLqED3rqDCT0FyPh', // Nirvana
+    '1w5Kfo2jwwIPruYS2UWh56', // Pearl Jam
+    '7jy3rLJdDQY21OgRLCZ9sD', // Foo Fighters
+    '4KWTAlx2RvbpseOGMEmROg', // R.E.M.
+    '0L8ExT028jH3ddEcZwqJJ5', // Red Hot Chili Peppers
+    '4Z8W4fKeB5YxbusRsdQVPb', // Radiohead
+    '03r4iKL2g2442PT9n2UKsx', // Beastie Boys
+    '2DaxqgrOhkeH0fpeiQq2f4', // Oasis
+    '0TImkz4nPqjegtVSMZnMRq', // TLC
+    '40Yq4vzPs9VNUrIBG5Jr2i', // The Smashing Pumpkins
+    '7MhMgCo0Bl0Kukl93PZbYS', // Blur
+    '0cQbJU1aAzvbEmTuljWLlF', // No Doubt
+    '51Blml2LZPmy7TTiAg47vQ', // U2
+    '2UazAtjfzqBF0Nho2awK4z', // Stone Temple Pilots
+    '0X380XXQSNBYuleKzav5UO', // Nine Inch Nails
+    '7t0rwkOPGlDPEhaOcVtOt9', // The Cranberries
+    '7oPftvlwr6VrsViSDV7fJY', // Green Day
+    '1XgFuvRd7r5g0h844A5ZUQ', // Take That
   ];
 }

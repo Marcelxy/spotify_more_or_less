@@ -148,6 +148,9 @@ class _CategoryPageState extends State<CategoryPage> {
         highscoreCategorie = 'eighty';
         return SpotifyIdArtistsList.eightyArtistIds;
         break;
+      case 4:
+        highscoreCategorie = 'ninety';
+        return SpotifyIdArtistsList.ninetyArtistIds;
       default:
         print('Falsche Index Übergabe bei Auswahl der SpotifyIdAtristList aufgetreten.');
         return null;
@@ -160,7 +163,14 @@ class _CategoryPageState extends State<CategoryPage> {
       final FirebaseUser user = await _auth.currentUser();
       var userData = await Firestore.instance.collection('users').document(user.uid).get();
       var userDataList = userData.data.values.toList();
-      return userDataList[1][highscoreCategorie];
+      int highscorePoints = userDataList[1][highscoreCategorie];
+      // Dieser Fall tritt nur dann auf, wenn der Benutzer noch keine Ranglistenpunkte in dieser
+      // Kategorie erzielt hat und diese Kategorie noch nicht in der Cloud Firestore für diesen
+      // Benutzer angelegt ist.
+      if (highscorePoints == null) {
+        highscorePoints = 0;
+      }
+      return highscorePoints;
     } catch (e) {
       print("Error: " + e.toString());
     }

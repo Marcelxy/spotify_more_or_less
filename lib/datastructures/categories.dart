@@ -7,7 +7,7 @@ class Categories {
     '90er',
     'Pop',
     'Rock',
-    'Indie',
+    'Rap',
   ];
 
   // Hex Codes für Farben: http://www.farb-tabelle.de/de/farbtabelle.htm

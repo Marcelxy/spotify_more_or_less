@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -30,6 +31,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FacebookLogin _facebookSignIn = FacebookLogin();
   ProgressDialog _progressDialog;
 
   @override
@@ -48,6 +50,7 @@ class _LoginPageState extends State<LoginPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Color.fromARGB(218, 0, 0, 0),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -65,8 +68,6 @@ class _LoginPageState extends State<LoginPage> {
                 width: 260,
                 child: FacebookSignInButton(
                   onPressed: () => _signInWithFacebook(),
-                  borderRadius: 10.0,
-                  text: 'Anmelden mit Facebook',
                 ),
               ),
             ],
@@ -85,22 +86,44 @@ class _LoginPageState extends State<LoginPage> {
     final AuthResult authResult = await _auth.signInWithCredential(credential);
     final FirebaseUser user = authResult.user;
     final FirebaseUser currentUser = await _auth.currentUser();
-    _createUserInCloudFirestore(currentUser);
-    print("Angemeldet über Google mit " + currentUser.email);
     Future.delayed(Duration(milliseconds: 100)).then((value) {
       _progressDialog.hide().whenComplete(() {
         Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
       });
     });
+    print("Angemeldet über Google mit " + currentUser.email);
     return 'signInWithGoogle erfolgreich: $user';
   }
 
-  void _signInWithFacebook() async {
-    // TODO Facebook Login implementieren.
+  Future<FirebaseUser> _signInWithFacebook() async {
+    FirebaseUser currentUser;
+    _facebookSignIn.loginBehavior = FacebookLoginBehavior.webViewOnly;
+    try {
+      _progressDialog.show();
+      final FacebookLoginResult facebookLoginResult = await _facebookSignIn.logIn(['email']);
+      if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
+        FacebookAccessToken facebookAccessToken = facebookLoginResult.accessToken;
+        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken: facebookAccessToken.token);
+        final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+        currentUser = await _auth.currentUser();
+        _createUserInCloudFirestore(user);
+        print("Angemeldet über Facebook mit " + currentUser.email);
+        Future.delayed(Duration(seconds: 1)).then((value) {
+          _progressDialog.hide().whenComplete(() {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+          });
+        });
+        return currentUser;
+      }
+    } catch (e) {
+      print(e);
+      return currentUser;
+    }
+    return null;
   }
 
   void _createUserInCloudFirestore(FirebaseUser currentUser) {
-    Map<String, int> map = {'global': 0, 'germany': 0, 'greatBritain': 0, 'eighty': 0};
+    Map<String, int> map = {'global': 0, 'germany': 0, 'greatBritain': 0, 'eighty': 0, 'ninety': 0};
     User user = new User(currentUser.email, map);
     Firestore.instance
         .collection('users')

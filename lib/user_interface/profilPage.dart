@@ -25,7 +25,11 @@ class _ProfilPageState extends State<ProfilPage> {
         child: Column(
           children: <Widget>[
             Flexible(
-              child: Center(child: Text('Test')),
+              child: Center(
+                  child: Text(
+                'Ist noch in Arbeit!',
+                style: TextStyle(color: Colors.redAccent, fontSize: 24.0),
+              )),
             ),
           ],
         ),
