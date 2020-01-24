@@ -33,6 +33,10 @@ class SpotifyIdArtistsList {
     '1dfeR4HaWDbWqFHLkxsg1d', // Queen
     '2ye2Wgw4gimLv2eAKyk1NB', // Metallica
     '7oPftvlwr6VrsViSDV7fJY', // Green Day
+    '7dGJo4pcD2V6oG8kP0tJRR', // Eminem
+    '5K4W6rqBFWDnAN6FQUkS6x', // Kayne West
+    '0hCNtLu0JehylgoiP8L4Gh', // Nicki Minaj
+    '0jnsk9HBra6NMjO2oANoPY', // Flo Rida
   ];
 
   // Künstler Quelle: https://de.wikipedia.org/wiki/Liste_der_deutschen_Nummer-eins-Hits_im_Ausland
@@ -126,6 +130,10 @@ class SpotifyIdArtistsList {
     '7KMqksf0UMdyA0UCf4R3ux', // James Blunt
   ];
 
+  static List<String> americaArtistIds = [
+
+  ];
+
   static List<String> eightyArtistIds = [
     '1dfeR4HaWDbWqFHLkxsg1d', // Queen
     '5NGO30tJxFlKixkPSgXcFE', // The Police
@@ -174,5 +182,36 @@ class SpotifyIdArtistsList {
     '7t0rwkOPGlDPEhaOcVtOt9', // The Cranberries
     '7oPftvlwr6VrsViSDV7fJY', // Green Day
     '1XgFuvRd7r5g0h844A5ZUQ', // Take That
+  ];
+
+  static List<String> rockArtistIds = [
+    '711MCceyCBcFnzjGY4Q7Un', // AC/DC
+    '3WrFJ7ztbogyGnTHbHJFl2', // Beatles
+    '22bE4uQ6baNwSHPVcDxLCe', // The Rolling Stones
+    '36QJpDe2go2KgaRleHCDTp', // Led Zeppelin
+    '6olE6TJLqED3rqDCT0FyPh', // Nirvana
+  ];
+
+  static List<String> rapArtistIds = [
+    '7dGJo4pcD2V6oG8kP0tJRR', // Eminem
+    '1ZwdS5xdxEREPySFridCfh', // 2Pac
+    '5me0Irg2ANcsgc93uaYrpb', // The Notorious B.I.G.
+    '3q7HBObVc0L8jNeTe5Gofh', // 50 Cent
+    '3nFkdlSjzX9mRTtwJOzDYB', // Jay-Z
+    '3Mcii5XWf6E0lrY3Uky4cA', // Ice Cube
+    '7hJcb9fa4alzcOq3EaNPoG', // Snoop Dogg
+    '6DPYiyq5kWVQS4RGwxzPC7', // Dr. Dre
+    '20qISvAhX20dpIbOOzGK3q', // Nas
+    '55Aa2cqylxrFIXC767Z865', // Lil Wayne
+    '5K4W6rqBFWDnAN6FQUkS6x', // Kayne West
+    '3TVXtAsR1Inumwj472S9r4', // Drake
+    '2RdwBSPQiwcmiDo9kixcl8', // Pharrell Williams
+    '2YZyLoL8N0Wb9xBt1NhZWg', // Kendrick Lamar
+    '13y7CgLHjMVRMDqxdx0Xdo', // Gucci Mane
+    '0c173mlxpT3dSFRgMO8XPh', // Big Sean
+    '0hCNtLu0JehylgoiP8L4Gh', // Nicki Minaj
+    '0jnsk9HBra6NMjO2oANoPY', // Flo Rida
+    '3aQeKQSyrW4qWr35idm0cy', // T-Pain
+    '137W8MRPWKqSmrBGDBFSop', // Wiz Khalifa
   ];
 }

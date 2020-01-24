@@ -145,12 +145,25 @@ class _CategoryPageState extends State<CategoryPage> {
         return SpotifyIdArtistsList.greatBritainArtistIds;
         break;
       case 3:
+        highscoreCategorie = 'america';
+        return SpotifyIdArtistsList.americaArtistIds;
+        break;
+      case 4:
         highscoreCategorie = 'eighty';
         return SpotifyIdArtistsList.eightyArtistIds;
         break;
-      case 4:
+      case 5:
         highscoreCategorie = 'ninety';
         return SpotifyIdArtistsList.ninetyArtistIds;
+        break;
+      case 6:
+        highscoreCategorie = 'rock';
+        return SpotifyIdArtistsList.rockArtistIds;
+        break;
+      case 7:
+        highscoreCategorie = 'rap';
+        return SpotifyIdArtistsList.rapArtistIds;
+        break;
       default:
         print('Falsche Index Übergabe bei Auswahl der SpotifyIdAtristList aufgetreten.');
         return null;

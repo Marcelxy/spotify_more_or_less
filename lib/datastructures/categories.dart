@@ -3,9 +3,9 @@ class Categories {
     'Weltweit',
     'Deutschland',
     'Großbritannien',
+    'USA',
     '80er',
     '90er',
-    'Pop',
     'Rock',
     'Rap',
   ];
